@@ -22,40 +22,6 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  // final TextEditingController _messageController = TextEditingController();
-  // final List<String> _messages = [];
-  // io.Socket? socket;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // Replace 'http://your_server_ip:3000' with your actual server URL
-  //   socket = io.io('http://127.0.0.1:3000', <String, dynamic>{
-  //     'transports': ['websocket'],
-  //   });
-  //   socket!.on('connect', (_) => print('Connected'));
-  //   socket!.on('disconnect', (_) => print('Disconnected'));
-  //   socket!.on('chat_message', (data) {
-  //     setState(() {
-  //       _messages.add(data);
-  //     });
-  //   });
-  // }
-
-  // @override
-  // void dispose() {
-  //   socket!.disconnect();
-  //   super.dispose();
-  // }
-
-  // void _sendMessage() {
-  //   if (_messageController.text.isNotEmpty) {
-  //     socket!.emit('chat_message', _messageController.text);
-  //     _messageController.clear();
-  //     print("message sent");
-  //   }
-  // }
-
   final TextEditingController _messageController = TextEditingController();
   final List<String> _messages = [];
   String? _username; // Store the username here
@@ -64,13 +30,10 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    _getUserInfo(); // Call a function to get the username when the app starts
-    // ...
-    // _connectToSocket();
+    _getUserInfo();
   }
 
   void _getUserInfo() async {
-    // Show a dialog to get the username when the app starts
     await Future.delayed(const Duration(milliseconds: 50));
     showDialog(
       context: context,
@@ -87,8 +50,8 @@ class _ChatScreenState extends State<ChatScreen> {
           actions: [
             ElevatedButton(
               onPressed: () {
-                _connectToSocket(); // After getting the username, connect to the socket
-                Navigator.pop(context); // Close the dialog
+                _connectToSocket();
+                Navigator.pop(context);
               },
               child: const Text('Save'),
             ),
@@ -100,24 +63,28 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _connectToSocket() {
     print("connect func");
-    // Replace 'http://your_server_ip:3000' with your actual server URL
     socket = io.io('http://localhost:3000', <String, dynamic>{
       'transports': ['websocket'],
     });
     socket!.on('connect', (_) {
       print('Connected');
-      // Send the username to the server when the socket connects
       if (_username != null) {
         socket!.emit('set_username', _username);
       }
     });
-    // ...
+
+    socket!.on('chat_message', (data) {
+      setState(() {
+        _messages.add(data['message']);
+      });
+    });
   }
 
   void _sendMessage() {
     if (_messageController.text.isNotEmpty) {
       socket!.emit('chat_message', _messageController.text);
-      _messageController.clear();
+      _messageController
+          .clear(); // Clear the text field after sending the message
       print("message sent");
     }
   }

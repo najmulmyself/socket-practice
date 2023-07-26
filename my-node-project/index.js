@@ -24,11 +24,12 @@ io.on("connect", (socket) => {
 
   // Listen for chat messages
   socket.on("chat_message", (message) => {
+    console.log(message);
     const username = usernames[socket.id]; // Retrieve the username from the socket id
     console.log(`Message received from "${username}":`, message);
 
     // Broadcast the message with the username to all connected clients (including the sender)
-    io.emit("chat_message", { username, message });
+    io.emit("chat_message", { username, message: message });
   });
 
   // Listen for disconnection
