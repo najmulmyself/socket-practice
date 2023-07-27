@@ -25,6 +25,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final List<String> _messages = [];
   String? _username; // Store the username here
+  List<String>? username = [];
   io.Socket? socket;
 
   @override
@@ -73,9 +74,22 @@ class _ChatScreenState extends State<ChatScreen> {
       }
     });
 
+    // socket!.on(
+    //   'chat_message',
+    //   (data) {
+    //     setState(() {
+    //       _messages.add(data['message']);
+    //     });
+    //   },
+    // );
+
     socket!.on('chat_message', (data) {
+      print(socket!.id);
+
       setState(() {
-        _messages.add(data['message']);
+        username = data['username'];
+        final messageContent = data['message'];
+        _messages.add(' $messageContent');
       });
     });
   }
@@ -102,6 +116,7 @@ class _ChatScreenState extends State<ChatScreen> {
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 return ListTile(
+                  // trailing: Text(username![index]),
                   title: Text(_messages[index]),
                 );
               },
