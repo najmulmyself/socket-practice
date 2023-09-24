@@ -2,8 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:test_data/DemoScrnEnc.dart';
-import 'package:test_data/Table.dart';
+import 'package:test_data/riverpodEx.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,9 +19,9 @@ class SocketIOChatApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: DemoScreenForDecryption(),
+      home: RiverpodApp(),
     );
   }
 }
