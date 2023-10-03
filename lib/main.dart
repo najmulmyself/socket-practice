@@ -2,12 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:test_data/riverpodEx.dart';
+import 'package:test_data/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   HttpOverrides.global = MyHttpOverrides();
+  // Initialize FFI
+
 
   runApp(
     const ProviderScope(child: SocketIOChatApp()),
@@ -21,7 +23,7 @@ class SocketIOChatApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: RiverpodApp(),
+      home: HomeScreen(),
     );
   }
 }
