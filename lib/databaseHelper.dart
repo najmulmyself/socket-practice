@@ -20,7 +20,9 @@ class DatabaseHelper {
 
   Future<Database> initializeDatabase() async {
     String databasePath = await getDatabasesPath();
+    print(" after path printing");
     String path = join(databasePath, dbName);
+    print(path);
 
     Database database = await openDatabase(
       path,
@@ -41,6 +43,7 @@ class DatabaseHelper {
 
   Future<List<MyData>> getAllData() async {
     final db = await database;
+    print(await getDatabasesPath());
     final List<Map<String, dynamic>> maps = await db.query(table);
     return List.generate(maps.length, (i) {
       return MyData.fromMap(maps[i]);
