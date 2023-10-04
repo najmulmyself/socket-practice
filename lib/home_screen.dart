@@ -35,19 +35,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();
-                  }
-                  if (snapshot.data!.isEmpty) {
+                  } else if (snapshot.data!.isEmpty) {
                     return const Text("something went wrong");
+                  } else if (snapshot.hasError) {
+                    return const Text("error occured");
+                  } else {
+                    return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(snapshot.data![index].name),
+                          subtitle:
+                              Text("Age is : ${snapshot.data![index].age}"),
+                        );
+                      },
+                    );
                   }
-                  return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(snapshot.data![index].name),
-                        subtitle: Text("Age is : ${snapshot.data![index].age}"),
-                      );
-                    },
-                  );
                 }),
           ),
           const SizedBox(
