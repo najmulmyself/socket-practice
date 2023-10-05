@@ -30,29 +30,55 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
-            child: FutureBuilder(
-                future: dbHelper.getAllData(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  } else if (snapshot.data!.isEmpty) {
-                    return const Text("something went wrong");
-                  } else if (snapshot.hasError) {
-                    return const Text("error occured");
-                  } else {
-                    return ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(snapshot.data![index].name),
-                          subtitle:
-                              Text("Age is : ${snapshot.data![index].age}"),
-                        );
-                      },
+              // child: FutureBuilder(
+              //     future: dbHelper.getAllData(),
+              //     builder: (context, snapshot) {
+              //       if (snapshot.connectionState == ConnectionState.waiting) {
+              //         return const Center(child: CircularProgressIndicator());
+              //       } else if (snapshot.data!.isEmpty) {
+              //         return const Text("something went wrong");
+              //       } else if (snapshot.hasError) {
+              //         return const Text("error occured");
+              //       } else {
+              //         return ListView.builder(
+              //           itemCount: snapshot.data!.length,
+              //           itemBuilder: (context, index) {
+              //             return ListTile(
+              //               title: Text(snapshot.data![index].name),
+              //               subtitle:
+              //                   Text("Age is : ${snapshot.data![index].age}"),
+              //             );
+              //           },
+              //         );
+              //       }
+              //     }),
+              child: FutureBuilder<List<MyData>>(
+            future: dbHelper.getAllData(),
+            builder:
+                (BuildContext context, AsyncSnapshot<List<MyData>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                // Data is still loading
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                // An error occurred
+                return Text("Error: ${snapshot.error}");
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                // No data available
+                return const Text("No data available.");
+              } else {
+                // Data is available, you can use snapshot.data
+                return ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(snapshot.data![index].name),
+                      subtitle: Text("Age is : ${snapshot.data![index].age}"),
                     );
-                  }
-                }),
-          ),
+                  },
+                );
+              }
+            },
+          )),
           const SizedBox(
             height: 40,
           ),
@@ -74,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  users = await dbHelper.getAllData();
+                  await dbHelper.requestStoragePermission();
                 },
                 child: const Text("Read Data"),
               ),
